@@ -5,8 +5,10 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Function3
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -87,16 +89,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun chainObservablesWithZipOperator(
         simpleObservable: Observable<String>,
-        simpleObservable1: Observable<String>
+        simpleObservable1: Observable<String>,
+        simpleObservable2: Observable<String>
     ) {
-        disposables.add(Observable.zip(simpleObservable, simpleObservable1,
-            BiFunction<String, String, String> { t1, t2 ->
-              return@BiFunction "$t1 $t2"
-            }).subscribe({ Log.e("Rx zip result: ", it) }, {
-            Log.e("Rx zip error: ", it.message)
-        }))
+        disposables.add(
+            Observable.zip(
+                simpleObservable,
+                simpleObservable1,
+                simpleObservable2,
+                Function3<String, String, String, String> { t1, t2, t3 -> "$t1 $t2 $t3" })
+                .subscribe({ Log.e("Rx zip x3 result: ", it) }, {
+                    Log.e("Rx zip x3 error: ", it.message)
+                })
+        )
+
     }
 
-    private fun getSimpleObservable(value: String): Observable<String> =
-        Observable.just(value)
+    private fun getSimpleObservable(value: String): Observable<String> = Observable.just(value)
+
 }
