@@ -1,11 +1,11 @@
 package slawomir.kustra.rx
 
-import android.support.v7.app.AppCompatActivity
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.ObservableSource
-import java.util.concurrent.Callable
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -24,12 +24,27 @@ class MainActivity : AppCompatActivity() {
     private fun callDeferOperator() {
         val defer: Observable<Long> = Observable.defer { source }
             .doOnNext {
-                Log.e("defer", it.toString())
+                Log.e("Rx defer", it.toString())
             }
         defer.subscribe()
+
+        val defer2: Observable<Any> = Observable.defer {
+            try {
+                Observable.just(fakeHeavyMethod())
+            } catch (e: java.lang.Exception) {
+                Observable.error<Throwable>(e)
+            }
+        }
+        defer2.doOnComplete {
+            Log.e("Rx defer2 ", "completed")
+        }.subscribe()
     }
 
-    private fun callFromCallableOperator() {
 
+    private fun fakeHeavyMethod(): Completable {
+        for (i in 0..9999999999) {
+
+        }
+        return Completable.complete()
     }
 }
