@@ -25,7 +25,11 @@ class MainActivity : AppCompatActivity() {
         callFromCallableOperator()
         changeStringListToReactiveDataStream()
         chainObservablesWithZipOperator(getSimpleObservable("cat"), getSimpleObservable("dog"))
-
+        chainObservablesWithZipOperator(
+            getSimpleObservable("cat"),
+            getSimpleObservable("dog"),
+            getSimpleObservable("elephant")
+        )
     }
 
     override fun onDestroy() {
@@ -85,6 +89,21 @@ class MainActivity : AppCompatActivity() {
 
         }
         return Completable.complete()
+    }
+
+    private fun chainObservablesWithZipOperator(
+        simpleObservable: Observable<String>,
+        simpleObservable1: Observable<String>
+    ) {
+        disposables.add(
+            Observable.zip(
+                simpleObservable,
+                simpleObservable1,
+                BiFunction<String, String, String> { t1, t2 -> "$t1 $t2" })
+                .subscribe({ Log.e("Rx zip x3 result: ", it) }, {
+                    Log.e("Rx zip x3 error: ", it.message)
+                })
+        )
     }
 
     private fun chainObservablesWithZipOperator(
