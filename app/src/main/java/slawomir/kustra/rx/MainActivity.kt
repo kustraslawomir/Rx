@@ -40,6 +40,14 @@ class MainActivity : AppCompatActivity() {
         }.subscribe()
     }
 
+    private fun callFromCallableOperator() {
+        val fromCallable: Observable<Completable> = Observable.fromCallable(::fakeHeavyMethod)
+        fromCallable
+            .doOnComplete {
+                Log.e("Rx fromCallable ", "completed")
+            }
+            .subscribe()
+    }
 
     private fun fakeHeavyMethod(): Completable {
         for (i in 0..9999999999) {
