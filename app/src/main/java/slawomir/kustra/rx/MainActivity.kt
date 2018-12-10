@@ -6,6 +6,7 @@ import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         callDeferOperators()
         callFromCallableOperator()
         changeStringListToReactiveDataStream()
+        chainObservablesWithZipOperator(getSimpleObservable("cat"), getSimpleObservable("dog"))
 
     }
 
@@ -39,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         val defer2: Observable<Any> = Observable.defer {
             try {
                 Observable.just(fakeHeavyMethod())
-            } catch (e: java.lang.Exception) {
+            } catch (e: Exception) {
                 Observable.error<Throwable>(e)
             }
         }
@@ -70,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         disposables.add(
             Observable.fromIterable(stringListSource).subscribe({
                 Log.e("Rx .fromIterable: ", it)
-            },{
+            }, {
                 Log.e("Rx .fromIterable e: ", it.message)
             })
         )
@@ -82,4 +84,19 @@ class MainActivity : AppCompatActivity() {
         }
         return Completable.complete()
     }
+
+    private fun chainObservablesWithZipOperator(
+        simpleObservable: Observable<String>,
+        simpleObservable1: Observable<String>
+    ) {
+        disposables.add(Observable.zip(simpleObservable, simpleObservable1,
+            BiFunction<String, String, String> { t1, t2 ->
+              return@BiFunction "$t1 $t2"
+            }).subscribe({ Log.e("Rx zip result: ", it) }, {
+            Log.e("Rx zip error: ", it.message)
+        }))
+    }
+
+    private fun getSimpleObservable(value: String): Observable<String> =
+        Observable.just(value)
 }
