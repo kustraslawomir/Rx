@@ -1,8 +1,9 @@
-package slawomir.kustra.rx
+package slawomir.kustra.rx.chapters.second
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import slawomir.kustra.rx.R
+import slawomir.kustra.rx.isEven
 import kotlin.random.Random
 
 class SecondChapter : AppCompatActivity() {
@@ -23,7 +24,6 @@ class SecondChapter : AppCompatActivity() {
         validateNumber(5) { x: Int -> x.isEven() }
 
         validateNumberWithInlineFun(6) { x: Int -> x.isEven() }
-
     }
 
     /*
