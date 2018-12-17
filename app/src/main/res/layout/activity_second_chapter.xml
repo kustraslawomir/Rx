@@ -21,4 +21,11 @@
             android:text="Count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
+    <Button
+            android:layout_marginTop="200dp"
+            android:text="Coroutines"
+            android:id="@+id/runCoroutines"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 </LinearLayout>

@@ -3,10 +3,14 @@ package slawomir.kustra.rx.chapters.second
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_second_chapter.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import slawomir.kustra.rx.R
 import slawomir.kustra.rx.chapters.second.calculator.ReactiveCalculator
 import slawomir.kustra.rx.isEven
 import kotlin.random.Random
+import kotlin.system.measureTimeMillis
 
 class SecondChapter : AppCompatActivity() {
 
@@ -30,8 +34,11 @@ class SecondChapter : AppCompatActivity() {
         val reactiveCalculator = ReactiveCalculator(5, 10)
         reactiveCalculator.modifyNumbers(a = 3, b = 10)
 
-        count.setOnClickListener {
-            reactiveCalculator.handleInput(input.text.toString())
+        count.setOnClickListener { reactiveCalculator.handleInput(input.text.toString()) }
+
+        runCoroutines.setOnClickListener {
+            GlobalScope.launch { longRunningTsk() }
+            println("${fibonacci.take(10) join ","}")
         }
     }
 
@@ -92,5 +99,34 @@ class SecondChapter : AppCompatActivity() {
         if (isEven(x))
             print("inline x=$x is even")
         else print("inline x=$x is not even")
+    }
+
+    /*
+    ------------ Coroutines ------------
+    Coroutines help with writing asynchronous, non-blocking (ui) code.
+    Coroutines are light-weight threads. A light weight thread means it doest map on native thread,
+     so it doest require context switching on processor, so they are faster.
+     */
+
+    private suspend fun longRunningTsk(): Long {
+        return measureTimeMillis {
+            println("Please wait")
+            delay(2000)
+            println("Delay Over")
+        }
+    }
+
+    private val fibonacci = sequence {
+        var a = 0
+        var b = 0
+        yield(a)
+        yield(b)
+
+        while (true) {
+            val c = a + b
+            yield(c)
+            a = b
+            b = c
+        }
     }
 }
