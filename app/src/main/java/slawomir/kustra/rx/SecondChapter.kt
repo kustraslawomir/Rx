@@ -22,10 +22,12 @@ class SecondChapter : AppCompatActivity() {
         validateNumber(4) { x: Int -> x.isEven() }
         validateNumber(5) { x: Int -> x.isEven() }
 
+        validateNumberWithInlineFun(6) { x: Int -> x.isEven() }
+
     }
 
     /*
-    Pure functions definition:
+    ------------ Pure functions ------------
     if the return value of a function is completely dependent on its arguments/parameters,
     then this function may be referred to as a pure function
 
@@ -36,13 +38,50 @@ class SecondChapter : AppCompatActivity() {
     private fun square(n: Int) = n * n
 
     /*
-    High order function definition:
+   ------------ High order function ------------
     Those functions that take another function as an argument or return fun(args) : Any as result
+
+    NOTE: Each object is allocated space in memory heap and the methods that call this method are also allocated space.
+    To avoid allocating memory heap we can consider using inline functions
      */
 
     private fun validateNumber(x: Int, isEven: (x: Int) -> Boolean) {
         if (isEven(x))
             print("x=$x is even")
         else print("x=$x is not even")
+    }
+
+    /*
+    ------------ Inline functions ------------
+    Tip: Use in high order functions
+    Helps reduce call overhead. Inline tells the compiler to copy these functions and parameters to call site.
+    Definition:
+    Inline functions are an enhancement feature to improve the performance and memory optimization of a program
+
+    Example:
+
+    public void nonInlined(Function block) {
+        System.out.println("test");
+        block.invoke();
+
+    }
+
+    Compiler will create from above method instance of Function:
+
+    nonInlined(new Function() {
+    @Override
+    public void invoke() {
+        System.out.println("do something here");
+    }});
+
+    and if we use inline function same block of code would look like this:
+    System.out.println("do something here");
+    No new instances are created!
+    */
+
+    private inline fun validateNumberWithInlineFun(x: Int, isEven: (x: Int) -> Boolean) {
+        if (isEven(x))
+            print("inline x=$x is even")
+        else print("inline x=$x is not even")
     }
 }
