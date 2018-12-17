@@ -2,6 +2,12 @@ package slawomir.kustra.rx.chapters.second
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import io.reactivex.Maybe
+import io.reactivex.MaybeObserver
+import io.reactivex.Observable
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Consumer
 import kotlinx.android.synthetic.main.activity_second_chapter.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -38,8 +44,10 @@ class SecondChapter : AppCompatActivity() {
 
         runCoroutines.setOnClickListener {
             GlobalScope.launch { longRunningTsk() }
-            println("${fibonacci.take(10) join ","}")
+            println(fibonacci.take(10).joinToString(","))
         }
+
+        runMonadExamples()
     }
 
     /*
@@ -128,5 +136,37 @@ class SecondChapter : AppCompatActivity() {
             a = b
             b = c
         }
+    }
+
+    /*
+    ------------ Monad ------------
+     Monad is a structure that creates a new type by encapsulating a value and adding some extra functionalities to it.
+     */
+
+    private fun runMonadExamples() {
+
+        val maybeValue: Maybe<Int> = Maybe.just(10)
+        maybeValue.subscribe(object : MaybeObserver<Int> {
+            override fun onSuccess(t: Int) {
+                println("onSuccess")
+            }
+
+            override fun onComplete() {
+                println("onComplete")
+            }
+
+            override fun onSubscribe(d: Disposable) {
+                println("onSubscribe")
+            }
+
+            override fun onError(e: Throwable) {
+                println("onError ${e.message}")
+            }
+        })
+
+        val maybeEmpty = Maybe.empty<Int>()
+        maybeEmpty.subscribe({
+            println("onSuccess $it")
+        }, { println("onError ${it.message}") })
     }
 }

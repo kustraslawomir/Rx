@@ -61,10 +61,11 @@ class ReactiveCalculator(a: Int, b: Int) {
             val pattern: Pattern = Pattern.compile("([a|b])(?:\\s)?=(?:\\s)?(\\d*)")
             var a: Int? = null
             var b: Int? = null
+
             val matcher: Matcher = pattern.matcher(inputLine)
-            if (matcher.matches() && matcher.group(1) != null
-                && matcher.group(2) != null
-            ) {
+            if (matcher.matches()
+                && matcher.group(1) != null
+                && matcher.group(2) != null) {
                 if (matcher.group(1).toLowerCase() == "a") {
                     a = matcher.group(2).toInt()
                 } else if (matcher.group(1).toLowerCase() == "b") {
