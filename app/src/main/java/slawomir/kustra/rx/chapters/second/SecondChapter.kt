@@ -28,6 +28,7 @@ class SecondChapter : AppCompatActivity() {
         validateNumberWithInlineFun(6) { x: Int -> x.isEven() }
 
         val reactiveCalculator = ReactiveCalculator(5, 10)
+        reactiveCalculator.modifyNumbers(a = 3, b = 10)
 
         count.setOnClickListener {
             reactiveCalculator.handleInput(input.text.toString())
