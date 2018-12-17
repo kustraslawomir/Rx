@@ -18,15 +18,31 @@ class SecondChapter : AppCompatActivity() {
         println("multipleRandom 3: ${multipleRandom(2)}")
 
         println("square from 5: ${square(5)}")
+
+        validateNumber(4) { x: Int -> x.isEven() }
+        validateNumber(5) { x: Int -> x.isEven() }
+
     }
 
     /*
     Pure functions definition:
     if the return value of a function is completely dependent on its arguments/parameters,
     then this function may be referred to as a pure function
+
+    PURE FUNCTION DON'T HAVE SIDE EFFECTS (won't modify any other state)
+
      */
 
     private fun square(n: Int) = n * n
 
+    /*
+    High order function definition:
+    Those functions that take another function as an argument or return fun(args) : Any as result
+     */
 
+    private fun validateNumber(x: Int, isEven: (x: Int) -> Boolean) {
+        if (isEven(x))
+            print("x=$x is even")
+        else print("x=$x is not even")
+    }
 }
