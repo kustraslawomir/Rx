@@ -2,7 +2,9 @@ package slawomir.kustra.rx.chapters.second
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import kotlinx.android.synthetic.main.activity_second_chapter.*
 import slawomir.kustra.rx.R
+import slawomir.kustra.rx.chapters.second.calculator.ReactiveCalculator
 import slawomir.kustra.rx.isEven
 import kotlin.random.Random
 
@@ -24,6 +26,12 @@ class SecondChapter : AppCompatActivity() {
         validateNumber(5) { x: Int -> x.isEven() }
 
         validateNumberWithInlineFun(6) { x: Int -> x.isEven() }
+
+        val reactiveCalculator = ReactiveCalculator(5, 10)
+
+        count.setOnClickListener {
+            reactiveCalculator.handleInput(input.text.toString())
+        }
     }
 
     /*
