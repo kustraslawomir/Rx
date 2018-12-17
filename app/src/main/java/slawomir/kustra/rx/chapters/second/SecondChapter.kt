@@ -141,6 +141,7 @@ class SecondChapter : AppCompatActivity() {
     /*
     ------------ Monad ------------
      Monad is a structure that creates a new type by encapsulating a value and adding some extra functionalities to it.
+     The Maybe monad says it may or may not contain a value, and it completes with or without a value or with an error.
      */
 
     private fun runMonadExamples() {
