@@ -6,6 +6,7 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.toObservable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.android.synthetic.main.activity_third_chapter.*
@@ -21,9 +22,18 @@ class ThirdChapter : AppCompatActivity() {
     private val list: List<Int> = listOf(0, 1, 2, 3, 4, 5)
     private val observable: Observable<Boolean> = Observable.just(flag)
     private val listObservable: Observable<List<String>> = Observable.just(arrayListOf("one", "two", "three"))
+    private val errorObservable: Observable<String> =
+        Observable.create<String> {
+            it.onNext("test1")
+            it.onNext("test2")
+            it.onNext("test3")
+            it.onError(Exception("Error!"))
+        }
 
     private val observableFromArray: Observable<List<Int>> =
         Observable.fromArray<List<Int>>(list)
+
+    val listToObservable: Observable<Int> = list.toObservable()
 
     private val observer: Observer<Any> = object : Observer<Any> {
         override fun onComplete() {
@@ -39,13 +49,15 @@ class ThirdChapter : AppCompatActivity() {
         }
 
         override fun onError(throwable: Throwable) {
-            println("onError")
+            println("onError! ${throwable.message}")
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_third_chapter)
+
+        changeFlagState.setOnClickListener { changeFlagState() }
 
         observable.subscribe(observer)
 
@@ -55,10 +67,10 @@ class ThirdChapter : AppCompatActivity() {
                 { println("subject error: ${it.message}") }
             ))
 
-        changeFlagState.setOnClickListener { changeFlagState() }
-
         listObservable.subscribe(observer)
         observableFromArray.subscribe(observer)
+        errorObservable.subscribe(observer)
+        listToObservable.subscribe(observer)
     }
 
     override fun onDestroy() {
