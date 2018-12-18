@@ -18,26 +18,27 @@ class ThirdChapter : AppCompatActivity() {
     private var flag = false
 
     private val booleanSubject: Subject<Boolean> = PublishSubject.create<Boolean>()
+    private val observable: Observable<Boolean> = Observable.just(flag)
+    private val listObservable : Observable<List<String>> = Observable.just(arrayListOf("one", "two", "three"))
 
-    private val observer: Observer<Boolean> = object : Observer<Boolean> {
+    private val observer: Observer<Any> = object : Observer<Any> {
         override fun onComplete() {
-            println("onComplete | flag value: $flag")
+            println("onComplete")
         }
 
-        override fun onSubscribe(d: Disposable) {
+        override fun onSubscribe(disposable: Disposable) {
             println("onSubscribe")
         }
 
-        override fun onNext(t: Boolean) {
-            println("onNext")
+        override fun onNext(next: Any) {
+            println("onNext $next")
         }
 
-        override fun onError(e: Throwable) {
+        override fun onError(throwable: Throwable) {
             println("onError")
         }
     }
 
-    private val observable: Observable<Boolean> = Observable.just(flag)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +53,8 @@ class ThirdChapter : AppCompatActivity() {
             ))
 
         changeFlagState.setOnClickListener { changeFlagState() }
+
+        listObservable.subscribe(observer)
     }
 
     override fun onDestroy() {
