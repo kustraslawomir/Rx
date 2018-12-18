@@ -130,7 +130,7 @@ class ThirdChapter : AppCompatActivity() {
             println("connectableObservable 1 on completed")
         }))
 
-        disposables.add(connectableObservable.map { it*2 }
+        disposables.add(connectableObservable.map { it * 100 }
             .subscribe({
                 println("connectableObservable 2 on next: $it")
             }, {
@@ -143,7 +143,7 @@ class ThirdChapter : AppCompatActivity() {
 
         connectableObservable.subscribe {
             println("connectableObservable 3 $it") //!This HOT observable -> observer onComplete() method will not called because .connect() is above!
-            //Emissions will not be received after subsribe().
+            //Emissions will not be received after subscribe().
         }
     }
 

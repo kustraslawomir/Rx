@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import slawomir.kustra.rx.chapters.second.SecondChapter
 import slawomir.kustra.rx.chapters.third.ThirdChapter
+import slawomir.kustra.rx.subjects.SubjectScreen
 
 
 class MainActivity : AppCompatActivity() {
@@ -14,10 +15,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         secondChapter.setOnClickListener { startScreen(SecondChapter()) }
         thirdChapter.setOnClickListener { startScreen(ThirdChapter()) }
-
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
+        subjects.setOnClickListener { startScreen(SubjectScreen()) }
     }
 }
