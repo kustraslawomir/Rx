@@ -11,6 +11,7 @@ import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.android.synthetic.main.activity_third_chapter.*
 import slawomir.kustra.rx.R
+import java.util.concurrent.TimeUnit
 
 class ThirdChapter : AppCompatActivity() {
 
@@ -21,7 +22,7 @@ class ThirdChapter : AppCompatActivity() {
     private var flag = false
     private val list: List<Int> = listOf(0, 1, 2, 3, 4, 5)
     private val observable: Observable<Boolean> = Observable.just(flag)
-    private val listObservable: Observable<List<String>> = Observable.just(arrayListOf("one", "two", "three"))
+    private val listObservable: Observable<List<String>> = Observable.just(listOf("one", "two", "three"))
     private val errorObservable: Observable<String> =
         Observable.create<String> {
             it.onNext("test1")
@@ -33,7 +34,8 @@ class ThirdChapter : AppCompatActivity() {
     private val observableFromArray: Observable<List<Int>> =
         Observable.fromArray<List<Int>>(list)
 
-    val listToObservable: Observable<Int> = list.toObservable()
+    private val listToObservable: Observable<Int> = list.toObservable()
+    private val justObservable = Observable.just(list)
 
     private val observer: Observer<Any> = object : Observer<Any> {
         override fun onComplete() {
@@ -71,6 +73,48 @@ class ThirdChapter : AppCompatActivity() {
         observableFromArray.subscribe(observer)
         errorObservable.subscribe(observer)
         listToObservable.subscribe(observer)
+        justObservable.subscribe(observer)
+
+        Observable.just(5).subscribe(observer)
+        Observable.just("just").subscribe(observer)
+        Observable.just("just", 1, "just 2", 2).subscribe(observer)
+
+        Observable.range(0, 10).subscribe(observer)
+
+        Observable.empty<String>().subscribe(observer)
+
+        Observable.timer(5, TimeUnit.SECONDS)
+            .subscribe(observer)
+
+        Observable.interval(1, TimeUnit.SECONDS)
+            .subscribe(object : Observer<Long> {
+                override fun onComplete() {
+                    println("timer -> onComplete")
+                }
+
+                override fun onSubscribe(d: Disposable) {
+                    println("timer -> onSubscribe")
+                }
+
+                override fun onNext(interval: Long) {
+                    println("timer -> onNext $interval")
+                }
+
+                override fun onError(e: Throwable) {
+                    println("timer -> onError ${e.message}")
+                }
+            })
+
+        disposables.add(
+            Observable.fromArray<List<Int>>(list)
+                .subscribe({
+                    println("on next: $it")
+                }, {
+                    println("error: ${it.message}")
+                }, {
+                    println("on completed")
+                })
+        )
     }
 
     override fun onDestroy() {
