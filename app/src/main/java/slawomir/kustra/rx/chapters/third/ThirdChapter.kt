@@ -1,5 +1,6 @@
 package slawomir.kustra.rx.chapters.third
 
+import android.annotation.SuppressLint
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import io.reactivex.Observable
@@ -55,6 +56,7 @@ class ThirdChapter : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_third_chapter)
@@ -88,16 +90,20 @@ class ThirdChapter : AppCompatActivity() {
 
         Observable.interval(1, TimeUnit.SECONDS)
             .subscribe(object : Observer<Long> {
+                lateinit var disposable: Disposable
                 override fun onComplete() {
                     println("timer -> onComplete")
                 }
 
                 override fun onSubscribe(d: Disposable) {
+                    disposable = d
                     println("timer -> onSubscribe")
                 }
 
                 override fun onNext(interval: Long) {
                     println("timer -> onNext $interval")
+                    if (interval == 10L)
+                        disposable.dispose()
                 }
 
                 override fun onError(e: Throwable) {
@@ -115,6 +121,30 @@ class ThirdChapter : AppCompatActivity() {
                     println("on completed")
                 })
         )
+
+        disposables.add(connectableObservable.subscribe({
+            println("connectableObservable 1 on next: $it")
+        }, {
+            println("connectableObservable 1 error: ${it.message}")
+        }, {
+            println("connectableObservable 1 on completed")
+        }))
+
+        disposables.add(connectableObservable.map { it*2 }
+            .subscribe({
+                println("connectableObservable 2 on next: $it")
+            }, {
+                println("connectableObservable 2 error: ${it.message}")
+            }, {
+                println("connectableObservable 2 on completed")
+            }))
+
+        connectableObservable.connect()
+
+        connectableObservable.subscribe {
+            println("connectableObservable 3 $it") //!This HOT observable -> observer onComplete() method will not called because .connect() is above!
+            //Emissions will not be received after subsribe().
+        }
     }
 
     override fun onDestroy() {
@@ -126,4 +156,23 @@ class ThirdChapter : AppCompatActivity() {
         flag = !flag
         booleanSubject.onNext(flag)
     }
+
+    /*
+    ------- Hot/Cold Observables -------
+
+    Cold observables needs subscribe to start emitting items.
+    It doesn't need subscriptions to start emission. Observables are like TV channels
+    - they continue broadcasting (emitting)items/content irrespective of whether anyone is watching.
+
+     ConnectableObservable
+
+     It is example of Hot observable. It can turn any observable (hot/cold) to Hot observable.
+     It doesn't starts emitting items on subscribe call; instead it gets activated after you call 'connect' method.
+
+    "The main purpose of ConnectableObservable is for Observables with multiple
+    subscriptions to connect all subscriptions of an Observable together so that they can react
+    to a single push;"
+     */
+
+    private val connectableObservable = listOf(1, 2, 3, 4).toObservable().publish()
 }
