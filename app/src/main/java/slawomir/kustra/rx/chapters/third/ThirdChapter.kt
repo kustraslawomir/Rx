@@ -46,11 +46,10 @@ class ThirdChapter : AppCompatActivity() {
         observable.subscribe(observer)
 
         disposables.add(booleanSubject
-            .map { print("map subject: $flag") }.subscribe({
-                print("boolean subject: $flag")
-            }, {
-                print("subject error: ${it.message}")
-            }))
+            .subscribe(
+                { println("boolean subject: $flag") },
+                { println("subject error: ${it.message}") }
+            ))
 
         changeFlagState.setOnClickListener { changeFlagState() }
     }
