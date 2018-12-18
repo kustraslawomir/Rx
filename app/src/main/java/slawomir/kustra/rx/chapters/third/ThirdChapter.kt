@@ -15,11 +15,15 @@ class ThirdChapter : AppCompatActivity() {
 
     private val disposables = CompositeDisposable()
 
-    private var flag = false
-
     private val booleanSubject: Subject<Boolean> = PublishSubject.create<Boolean>()
+
+    private var flag = false
+    private val list: List<Int> = listOf(0, 1, 2, 3, 4, 5)
     private val observable: Observable<Boolean> = Observable.just(flag)
-    private val listObservable : Observable<List<String>> = Observable.just(arrayListOf("one", "two", "three"))
+    private val listObservable: Observable<List<String>> = Observable.just(arrayListOf("one", "two", "three"))
+
+    private val observableFromArray: Observable<List<Int>> =
+        Observable.fromArray<List<Int>>(list)
 
     private val observer: Observer<Any> = object : Observer<Any> {
         override fun onComplete() {
@@ -39,7 +43,6 @@ class ThirdChapter : AppCompatActivity() {
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_third_chapter)
@@ -55,6 +58,7 @@ class ThirdChapter : AppCompatActivity() {
         changeFlagState.setOnClickListener { changeFlagState() }
 
         listObservable.subscribe(observer)
+        observableFromArray.subscribe(observer)
     }
 
     override fun onDestroy() {
