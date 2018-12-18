@@ -126,7 +126,7 @@ class SecondChapter : AppCompatActivity() {
 
     private val fibonacci = sequence {
         var a = 0
-        var b = 0
+        var b = 1
         yield(a)
         yield(b)
 

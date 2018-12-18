@@ -9,6 +9,8 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".chapters.third.ThirdChapter">
+        </activity>
         <activity android:name=".chapters.second.SecondChapter">
         </activity>
         <activity android:name=".MainActivity">

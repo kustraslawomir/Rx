@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import slawomir.kustra.rx.chapters.second.SecondChapter
+import slawomir.kustra.rx.chapters.third.ThirdChapter
 
 
 class MainActivity : AppCompatActivity() {
@@ -12,12 +13,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         secondChapter.setOnClickListener { startScreen(SecondChapter()) }
+        thirdChapter.setOnClickListener { startScreen(ThirdChapter()) }
 
     }
 
     override fun onDestroy() {
         super.onDestroy()
     }
-
-
 }
