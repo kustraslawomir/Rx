@@ -5,6 +5,7 @@ import android.os.Bundle
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import io.reactivex.internal.subscriptions.ArrayCompositeSubscription
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
 import slawomir.kustra.rx.R
@@ -82,5 +83,57 @@ class SubjectScreen : AppCompatActivity() {
 
         replaySubject.onNext(Cat("Kocurek", true))
         replaySubject.onComplete()
+
+        /*
+       ---------- BEHAVIOUR SUBJECT ----------
+            Behaviour subjects works similar to publish subjects but it OVERPLAY the last emitted
+            item for NEW OBSERVER (subscription)
+         */
+        val behaviourSubject = BehaviorSubject.create<Int>()
+
+        behaviourSubject.onNext(1)
+
+        behaviourSubject.subscribe(object : Observer<Int> {
+            override fun onComplete() {
+                println("behaviourSubject onComplete")
+            }
+
+            override fun onSubscribe(d: Disposable) {
+                println("behaviourSubject onSubscribe")
+            }
+
+            override fun onNext(value: Int) {
+                println("behaviourSubject $value")
+            }
+
+            override fun onError(throwable: Throwable) {
+                println("behaviourSubject onError: ${throwable.message}")
+            }
+        })
+        behaviourSubject.onNext(2)
+        behaviourSubject.onNext(3)
+        behaviourSubject.onNext(4)
+
+        /*
+        After this subscribe behaviour subject will emit last one -> value "4"
+         */
+        behaviourSubject.subscribe(object : Observer<Int> {
+            override fun onComplete() {
+                println("behaviourSubject2 onComplete")
+            }
+
+            override fun onSubscribe(d: Disposable) {
+                println("behaviourSubject2 onSubscribe")
+            }
+
+            override fun onNext(value: Int) {
+                println("behaviourSubject2 $value")
+            }
+
+            override fun onError(throwable: Throwable) {
+                println("behaviourSubject2 onError: ${throwable.message}")
+            }
+        })
+        behaviourSubject.onComplete()
     }
 }
