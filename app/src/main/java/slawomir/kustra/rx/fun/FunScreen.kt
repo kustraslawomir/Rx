@@ -33,9 +33,11 @@ class FunScreen : AppCompatActivity() {
          */
         getNetworkResults()
             .publish { network ->
-                Observable.merge(network, getCacheResults()
-                        .takeUntil(network)
-                )
+                Observable
+                    .merge(
+                        network, getCacheResults()
+                            .takeUntil(network)
+                    )
             }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
