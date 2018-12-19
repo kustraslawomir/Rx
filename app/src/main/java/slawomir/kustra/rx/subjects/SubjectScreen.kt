@@ -2,9 +2,11 @@ package slawomir.kustra.rx.subjects
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import io.reactivex.internal.subscriptions.ArrayCompositeSubscription
+import io.reactivex.rxkotlin.toObservable
+import io.reactivex.subjects.AsyncSubject
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
@@ -12,7 +14,7 @@ import slawomir.kustra.rx.R
 
 class SubjectScreen : AppCompatActivity() {
 
-    private val compositeSubscription = ArrayCompositeSubscription(1)
+    val observableStrigList: Observable<String> = listOf("one", "two", "three", "four", "five").toObservable()
 
     /*
     ---------- Subject -----------
@@ -29,6 +31,7 @@ class SubjectScreen : AppCompatActivity() {
        Publish subject emits items only after subject is subscribed to observer.
        */
         val publishSubject: PublishSubject<String> = PublishSubject.create()
+
         publishSubject.onNext("1")
         publishSubject.onNext("2")
         publishSubject.subscribe(object : Observer<String> {
@@ -135,5 +138,39 @@ class SubjectScreen : AppCompatActivity() {
             }
         })
         behaviourSubject.onComplete()
+
+        /*
+        ---------- ASYNC SUBJECT ----------
+        AsyncSubject emits only last value of the source observable (for example list of Integers)
+        It will only print value = 5
+         */
+        val observableNumbersList: Observable<Int> = listOf(1, 2, 3, 4, 5).toObservable()
+        val asyncSubject = AsyncSubject.create<Int>()
+
+        /*
+        Subscribe to observable list
+         */
+        observableNumbersList.subscribe(asyncSubject)
+
+        /*
+        Subscribe to Observer<Int>
+         */
+        asyncSubject.subscribe(object : Observer<Int> {
+            override fun onComplete() {
+                println("asyncSubject onComplete")
+            }
+
+            override fun onSubscribe(disposable: Disposable) {
+                println("asyncSubject onSubscribe")
+            }
+
+            override fun onNext(value: Int) {
+                println("asyncSubject onNext $value")
+            }
+
+            override fun onError(throwable: Throwable) {
+                println("asyncSubject onError: ${throwable.message}")
+            }
+        })
     }
 }
