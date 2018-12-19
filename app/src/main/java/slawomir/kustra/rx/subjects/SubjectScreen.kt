@@ -91,10 +91,14 @@ class SubjectScreen : AppCompatActivity() {
        ---------- BEHAVIOUR SUBJECT ----------
             Behaviour subjects works similar to publish subjects but it OVERPLAY the last emitted
             item for NEW OBSERVER (subscription)
+
+            The result: !3!, 4,5,6
          */
         val behaviourSubject = BehaviorSubject.create<Int>()
 
         behaviourSubject.onNext(1)
+        behaviourSubject.onNext(2)
+        behaviourSubject.onNext(3)
 
         behaviourSubject.subscribe(object : Observer<Int> {
             override fun onComplete() {
@@ -113,9 +117,9 @@ class SubjectScreen : AppCompatActivity() {
                 println("behaviourSubject onError: ${throwable.message}")
             }
         })
-        behaviourSubject.onNext(2)
-        behaviourSubject.onNext(3)
         behaviourSubject.onNext(4)
+        behaviourSubject.onNext(5)
+        behaviourSubject.onNext(6)
 
         /*
         After this subscribe behaviour subject will emit last one -> value "4"
@@ -172,5 +176,7 @@ class SubjectScreen : AppCompatActivity() {
                 println("asyncSubject onError: ${throwable.message}")
             }
         })
+
+
     }
 }
