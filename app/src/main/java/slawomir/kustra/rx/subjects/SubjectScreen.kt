@@ -18,7 +18,6 @@ class SubjectScreen : AppCompatActivity() {
 
     /*
     ---------- Subject -----------
-    //test
     Subject is a sort of bridge that acts both as an observer and as an Observable.
     Because it is observer it can subscribe to one or many Observables,
     and because it is and Observable it can emit new items.
